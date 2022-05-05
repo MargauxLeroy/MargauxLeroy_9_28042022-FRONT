@@ -17,11 +17,26 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const input = this.document.querySelector(`input[data-testid="file"]`);
+    const file =  input.files[0];
+
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
+
+    const fileExtension = fileName.split('.').pop();
+    console.log(fileExtension);
+
+    const validExtensions = ['png', 'jpg', 'jpeg'];
+
+    if (!validExtensions.includes(fileExtension)) {
+      const inputError = this.document.querySelector('.file-proof-error');
+      inputError.innerText = 'Les seuls formats acceptés sont : png, jpg, jpeg.';
+      input.value = '';
+      return false;
+    }
+    
     formData.append('file', file)
     formData.append('email', email)
 
