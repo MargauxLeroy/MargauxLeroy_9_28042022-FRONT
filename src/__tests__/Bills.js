@@ -53,7 +53,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted)
     })
 
-describe("When I click on the eye icon", () => {
+    describe("When I click on the eye icon", () => {
       test("Then it should open a popup displaying the bill file", () => {
         document.body.innerHTML = BillsUI({ data: [bills[0]] })
   
@@ -79,9 +79,7 @@ describe("When I click on the eye icon", () => {
       test("Then it should open a new form", async () => {    
         document.body.innerHTML = BillsUI({ data: bills })
 
-        const onNavigate = (path) => {
-          document.body.innerHTML = ROUTES({ pathname: path })
-        };
+        const onNavigate = (path) => document.body.innerHTML = ROUTES({ pathname: path })
   
         const billsContainer = billsContainerFunction(null, onNavigate)
         document.body.innerHTML = BillsUI({ data: bills });
