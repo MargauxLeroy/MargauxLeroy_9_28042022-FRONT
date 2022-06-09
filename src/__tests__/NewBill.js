@@ -7,6 +7,7 @@ import mockStore from "../__mocks__/store";
 
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
+import BillsUI from "../views/BillsUI.js";
 
 import { localStorageMock } from "../__mocks__/localStorage.js";
 
@@ -45,7 +46,6 @@ describe("Given I am connected as an employee", () => {
 
       await waitFor(() => screen.getByTestId('icon-mail'))
       const mailIcon = screen.getByTestId('icon-mail')
-      //to-do write expect expression
       expect(mailIcon.classList.contains('active-icon')).toBe(true)
     })
 
@@ -118,6 +118,57 @@ describe("Given I am connected as an employee", () => {
           expect(screen.getByText('Mes notes de frais')).toBeTruthy()
         })
       })
+    })
+
+
+    // Test d'intégration POST
+    describe("When I submit a new bill", () => {
+      test('Then it sould send the new bill to the mock API POST', async () => {
+        const postSpy = jest.spyOn(mockStore, 'bills');
+
+        const newBill = {
+          id: "47qAXb6fIm2zOKkLzMro",
+          vat: "80",
+          fileUrl:
+            "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
+          status: "pending",
+          type: "Hôtel et logement",
+          commentary: "séminaire billed",
+          name: "encore",
+          fileName: "preview-facture-free-201801-pdf-1.jpg",
+          date: "2004-04-04",
+          amount: 400,
+          commentAdmin: "ok",
+          email: "a@a",
+          pct: 20,
+        };
+
+        const bills = mockStore.bills(newBill);
+        expect(postSpy).toHaveBeenCalledTimes(1);
+        expect((await bills.list()).length).toBe(4);
+      })
+
+      // 404
+      test("Then it should send the new bill to the mock API POST and fails with 404 message error", async () => {
+        mockStore.bills.mockImplementationOnce(() => {
+          return Promise.reject(new Error("Erreur 404"))
+        });
+        const html = BillsUI({ error: "Erreur 404" });
+        document.body.innerHTML = html;
+        const message = screen.getByText(/Erreur 404/);
+        expect(message).toBeTruthy();
+      });
+  
+      // 500
+      test("Then it should send the new bill to the mock API POST and fails with 500 message error", async () => {
+        mockStore.bills.mockImplementationOnce(() => {
+          return Promise.reject(new Error("Erreur 500"))
+        });
+        const html = BillsUI({ error: "Erreur 500" });
+        document.body.innerHTML = html;
+        const message = screen.getByText(/Erreur 500/);
+        expect(message).toBeTruthy();
+      });
     })
 
   })
