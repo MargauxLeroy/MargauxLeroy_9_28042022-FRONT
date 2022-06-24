@@ -25,9 +25,9 @@ const rows = (data) => {
 
 export default ({ data: bills = [], loading, error }) => {
 
-  const tempBills = Array.isArray(bills) ? bills : []
-  const orderedBills = tempBills.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
+  // On ajoute une variable intermédiaire avec les bills triées
+  const orderedBills = bills.sort((a, b) => new Date(b.date) - new Date(a.date));
+
   const modal = () => (`
     <div data-testid = "modaleFileEmployee" class="modal fade" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

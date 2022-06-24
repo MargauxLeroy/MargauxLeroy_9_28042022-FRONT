@@ -55,42 +55,47 @@ describe("Given I am connected as an employee", () => {
 
     describe("When I click on the eye icon", () => {
       test("Then it should open a popup displaying the bill file", () => {
+        // Je simule la page "Mes notes de frais" avec une seule note de frais
         document.body.innerHTML = BillsUI({ data: [bills[0]] })
+        // Je récupère mon container pour pouvoir accéder aux fonctions
+        const billsContainer = billsContainerFunction(null, null)
   
-        const onNavigate = (path) => document.body.innerHTML = ROUTES({ pathname: path })
-    
-        const billsContainer = billsContainerFunction(null, onNavigate)
-  
+        // Mock la fonction de gestion de modale normalement définie par BootstrapJS 
         $.fn.modal = jest.fn()
 
+        // Je récupère l'icône et la fonction qui gère le click de l'icône
         const eyeIcon = screen.getByTestId("icon-eye")
         const handleClickIconEye = jest.fn(() => billsContainer.handleClickIconEye(eyeIcon))
-        eyeIcon.addEventListener("click", handleClickIconEye)
-  
+        // Je l'ajoute sur l'icône et simule le click sur l'icône
+        eyeIcon.addEventListener("click", handleClickIconEye) 
         userEvent.click(eyeIcon)
+        // Je vérifie que le click a bien été simulé
         expect(handleClickIconEye).toHaveBeenCalled()
   
+        // Je récupère la modale et vérifie que la modale a bien été trouvée
         const modale = screen.getByTestId("modaleFileEmployee")
         expect(modale).toBeTruthy()
       })
     })
   
     describe("When I click on the new bill button", () => {
-      test("Then it should open a new form", async () => {    
+      test("Then it should open a new form", async () => {   
+        // Je simule la page "Mes notes de frais"
         document.body.innerHTML = BillsUI({ data: bills })
-
+        // Je récupère mon container pour pouvoir accéder aux fonctions
         const onNavigate = (path) => document.body.innerHTML = ROUTES({ pathname: path })
-  
         const billsContainer = billsContainerFunction(null, onNavigate)
-        document.body.innerHTML = BillsUI({ data: bills });
   
+        // Je récupère mon bouton et la fonction qui gère le click
         const newBillButton = screen.getByTestId('btn-new-bill')
         const handleClick = jest.fn(() => billsContainer.handleClickNewBill())
+        // Je l'ajoute sur le bouton et simule le click
         newBillButton.addEventListener('click', handleClick)
-  
         userEvent.click(newBillButton)
+        // Je vérifie que le click a bien été simulé
         expect(handleClick).toHaveBeenCalled()
   
+        // Je récupère le formulaire de la nouvelle page et vérifie qu'il a bien été trouvé
         const form = screen.getByTestId("form-new-bill")
         expect(form).toBeTruthy()     
       })

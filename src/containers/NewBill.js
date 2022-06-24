@@ -17,23 +17,26 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
-    const input = this.document.querySelector(`input[data-testid="file"]`);
-    const file =  input.files[0];
+    const input = this.document.querySelector(`input[data-testid="file"]`)
+    const file =  input.files[0]
 
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
 
-    const fileExtension = fileName.split('.').pop();
-    console.log(fileExtension);
+    // On récupère l'extension du document
+    const fileExtension = fileName.split('.').pop()
+    // On définie les extensions valides
+    const validExtensions = ['png', 'jpg', 'jpeg']
 
-    const validExtensions = ['png', 'jpg', 'jpeg'];
-
+    // Si l'extension du document est différente de celles acceptées...
     if (!validExtensions.includes(fileExtension)) {
-      const inputError = this.document.querySelector('.file-proof-error');
-      inputError.innerText = 'Les seuls formats acceptés sont : png, jpg, jpeg.';
-      input.value = '';
+      // On affiche un message d'erreur
+      const inputError = this.document.querySelector('.file-proof-error')
+      inputError.innerText = 'Les seuls formats acceptés sont : png, jpg, jpeg.'
+      // On refuse le document en vidant la valeur de l'input
+      input.value = ''
       return false;
     }
     
@@ -49,7 +52,6 @@ export default class NewBill {
         }
       })
       .then(({fileUrl, key}) => {
-        console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
@@ -62,9 +64,9 @@ export default class NewBill {
     const bill = {
       email,
       type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
-      name:  e.target.querySelector(`input[data-testid="expense-name"]`).value,
+      name: e.target.querySelector(`input[data-testid="expense-name"]`).value,
       amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
-      date:  e.target.querySelector(`input[data-testid="datepicker"]`).value,
+      date: e.target.querySelector(`input[data-testid="datepicker"]`).value,
       vat: e.target.querySelector(`input[data-testid="vat"]`).value,
       pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
       commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value,
